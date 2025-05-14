@@ -1,0 +1,17 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.30"
+remappings = [
+    '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/',
+    'ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/',
+    'erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/',
+    '@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/src/',
+    'forge-std/=lib/forge-std/src/',
+    'create3/=lib/create3-factory/src/',
+    'playpen/=lib/playpen/src/',
+    '@prb/math/=lib/prb-math/'
+]
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
