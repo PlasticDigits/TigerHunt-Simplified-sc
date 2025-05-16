@@ -15,8 +15,7 @@ contract DatastoreSetUint256 {
     using EnumerableSet for EnumerableSet.UintSet;
 
     // Registry for uint256 sets - msg.sender => setId => set
-    mapping(address owner => mapping(DatastoreSetIdUint256 setId => EnumerableSet.UintSet set))
-        private _uint256Sets;
+    mapping(address owner => mapping(DatastoreSetIdUint256 setId => EnumerableSet.UintSet set)) private _uint256Sets;
 
     // Events
     event AddUint256(DatastoreSetIdUint256 setId, uint256 number);
@@ -29,10 +28,7 @@ contract DatastoreSetUint256 {
         }
     }
 
-    function addBatch(
-        DatastoreSetIdUint256 setId,
-        uint256[] calldata numbers
-    ) external {
+    function addBatch(DatastoreSetIdUint256 setId, uint256[] calldata numbers) external {
         for (uint256 i; i < numbers.length; i++) {
             uint256 number = numbers[i];
             if (!_uint256Sets[msg.sender][setId].contains(number)) {
@@ -49,10 +45,7 @@ contract DatastoreSetUint256 {
         }
     }
 
-    function removeBatch(
-        DatastoreSetIdUint256 setId,
-        uint256[] calldata numbers
-    ) external {
+    function removeBatch(DatastoreSetIdUint256 setId, uint256[] calldata numbers) external {
         for (uint256 i; i < numbers.length; i++) {
             uint256 number = numbers[i];
             if (_uint256Sets[msg.sender][setId].contains(number)) {
@@ -62,33 +55,31 @@ contract DatastoreSetUint256 {
         }
     }
 
-    function contains(
-        address datastoreSetOwner,
-        DatastoreSetIdUint256 setId,
-        uint256 number
-    ) external view returns (bool) {
+    function contains(address datastoreSetOwner, DatastoreSetIdUint256 setId, uint256 number)
+        external
+        view
+        returns (bool)
+    {
         return _uint256Sets[datastoreSetOwner][setId].contains(number);
     }
 
-    function length(
-        address datastoreSetOwner,
-        DatastoreSetIdUint256 setId
-    ) external view returns (uint256) {
+    function length(address datastoreSetOwner, DatastoreSetIdUint256 setId) external view returns (uint256) {
         return _uint256Sets[datastoreSetOwner][setId].length();
     }
 
-    function at(
-        address datastoreSetOwner,
-        DatastoreSetIdUint256 setId,
-        uint256 index
-    ) external view returns (uint256 number) {
+    function at(address datastoreSetOwner, DatastoreSetIdUint256 setId, uint256 index)
+        external
+        view
+        returns (uint256 number)
+    {
         return _uint256Sets[datastoreSetOwner][setId].at(index);
     }
 
-    function getAll(
-        address datastoreSetOwner,
-        DatastoreSetIdUint256 setId
-    ) external view returns (uint256[] memory numbers) {
+    function getAll(address datastoreSetOwner, DatastoreSetIdUint256 setId)
+        external
+        view
+        returns (uint256[] memory numbers)
+    {
         return _uint256Sets[datastoreSetOwner][setId].values();
     }
 }

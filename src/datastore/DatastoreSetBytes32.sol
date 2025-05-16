@@ -15,8 +15,7 @@ contract DatastoreSetBytes32 {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     // Registry for bytes32 sets - msg.sender => setId => set
-    mapping(address owner => mapping(DatastoreSetIdBytes32 setId => EnumerableSet.Bytes32Set set))
-        private _bytes32Sets;
+    mapping(address owner => mapping(DatastoreSetIdBytes32 setId => EnumerableSet.Bytes32Set set)) private _bytes32Sets;
 
     // Events
     event AddBytes32(DatastoreSetIdBytes32 setId, bytes32 data);
@@ -29,10 +28,7 @@ contract DatastoreSetBytes32 {
         }
     }
 
-    function addBatch(
-        DatastoreSetIdBytes32 setId,
-        bytes32[] calldata items
-    ) external {
+    function addBatch(DatastoreSetIdBytes32 setId, bytes32[] calldata items) external {
         for (uint256 i; i < items.length; i++) {
             bytes32 item = items[i];
             if (!_bytes32Sets[msg.sender][setId].contains(item)) {
@@ -49,10 +45,7 @@ contract DatastoreSetBytes32 {
         }
     }
 
-    function removeBatch(
-        DatastoreSetIdBytes32 setId,
-        bytes32[] calldata items
-    ) external {
+    function removeBatch(DatastoreSetIdBytes32 setId, bytes32[] calldata items) external {
         for (uint256 i; i < items.length; i++) {
             bytes32 item = items[i];
             if (_bytes32Sets[msg.sender][setId].contains(item)) {
@@ -62,33 +55,31 @@ contract DatastoreSetBytes32 {
         }
     }
 
-    function contains(
-        address datastoreSetOwner,
-        DatastoreSetIdBytes32 setId,
-        bytes32 item
-    ) external view returns (bool) {
+    function contains(address datastoreSetOwner, DatastoreSetIdBytes32 setId, bytes32 item)
+        external
+        view
+        returns (bool)
+    {
         return _bytes32Sets[datastoreSetOwner][setId].contains(item);
     }
 
-    function length(
-        address datastoreSetOwner,
-        DatastoreSetIdBytes32 setId
-    ) external view returns (uint256) {
+    function length(address datastoreSetOwner, DatastoreSetIdBytes32 setId) external view returns (uint256) {
         return _bytes32Sets[datastoreSetOwner][setId].length();
     }
 
-    function at(
-        address datastoreSetOwner,
-        DatastoreSetIdBytes32 setId,
-        uint256 index
-    ) external view returns (bytes32 item) {
+    function at(address datastoreSetOwner, DatastoreSetIdBytes32 setId, uint256 index)
+        external
+        view
+        returns (bytes32 item)
+    {
         return _bytes32Sets[datastoreSetOwner][setId].at(index);
     }
 
-    function getAll(
-        address datastoreSetOwner,
-        DatastoreSetIdBytes32 setId
-    ) external view returns (bytes32[] memory items) {
+    function getAll(address datastoreSetOwner, DatastoreSetIdBytes32 setId)
+        external
+        view
+        returns (bytes32[] memory items)
+    {
         return _bytes32Sets[datastoreSetOwner][setId].values();
     }
 }

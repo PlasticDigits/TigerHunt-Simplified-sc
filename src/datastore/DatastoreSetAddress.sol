@@ -15,8 +15,7 @@ contract DatastoreSetAddress {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     // Registry for address sets - msg.sender => setId => set
-    mapping(address owner => mapping(DatastoreSetIdAddress setId => EnumerableSet.AddressSet set))
-        private _addressSets;
+    mapping(address owner => mapping(DatastoreSetIdAddress setId => EnumerableSet.AddressSet set)) private _addressSets;
 
     // Events
     event AddAddress(DatastoreSetIdAddress setId, address account);
@@ -29,10 +28,7 @@ contract DatastoreSetAddress {
         }
     }
 
-    function addBatch(
-        DatastoreSetIdAddress setId,
-        address[] calldata accounts
-    ) external {
+    function addBatch(DatastoreSetIdAddress setId, address[] calldata accounts) external {
         for (uint256 i; i < accounts.length; i++) {
             address account = accounts[i];
             if (!_addressSets[msg.sender][setId].contains(account)) {
@@ -49,10 +45,7 @@ contract DatastoreSetAddress {
         }
     }
 
-    function removeBatch(
-        DatastoreSetIdAddress setId,
-        address[] calldata accounts
-    ) external {
+    function removeBatch(DatastoreSetIdAddress setId, address[] calldata accounts) external {
         for (uint256 i; i < accounts.length; i++) {
             address account = accounts[i];
             if (_addressSets[msg.sender][setId].contains(account)) {
@@ -62,33 +55,31 @@ contract DatastoreSetAddress {
         }
     }
 
-    function contains(
-        address datastoreSetOwner,
-        DatastoreSetIdAddress setId,
-        address account
-    ) external view returns (bool) {
+    function contains(address datastoreSetOwner, DatastoreSetIdAddress setId, address account)
+        external
+        view
+        returns (bool)
+    {
         return _addressSets[datastoreSetOwner][setId].contains(account);
     }
 
-    function length(
-        address datastoreSetOwner,
-        DatastoreSetIdAddress setId
-    ) external view returns (uint256) {
+    function length(address datastoreSetOwner, DatastoreSetIdAddress setId) external view returns (uint256) {
         return _addressSets[datastoreSetOwner][setId].length();
     }
 
-    function at(
-        address datastoreSetOwner,
-        DatastoreSetIdAddress setId,
-        uint256 index
-    ) external view returns (address account) {
+    function at(address datastoreSetOwner, DatastoreSetIdAddress setId, uint256 index)
+        external
+        view
+        returns (address account)
+    {
         return _addressSets[datastoreSetOwner][setId].at(index);
     }
 
-    function getAll(
-        address datastoreSetOwner,
-        DatastoreSetIdAddress setId
-    ) external view returns (address[] memory accounts) {
+    function getAll(address datastoreSetOwner, DatastoreSetIdAddress setId)
+        external
+        view
+        returns (address[] memory accounts)
+    {
         return _addressSets[datastoreSetOwner][setId].values();
     }
 }

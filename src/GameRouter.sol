@@ -7,37 +7,57 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {DatastoreSetWrapper} from "./datastore/DatastoreSetWrapper.sol";
 import {DatastoreSetIdAddress} from "./datastore/DatastoreSetAddress.sol";
 import {CommandRegistry} from "./command/CommandRegistry.sol";
-import {ICommand, ICommandVoid, ICommandSelect, ICommandCheckbox, SelectParameter, CheckboxParameter, ICommandAddress, ICommandSwitch, SwitchParameter, ICommandSliderInt, SliderIntParameter, ICommandSliderFloat, SliderFloatParameter, ICommandRadio, RadioParameter, ICommandCheckbox, CheckboxParameter, ICommandTextfield, TextfieldParameter, ICommandTile, PlayerEntity, TargetEntity, CommandRequirements, CommandParameterType} from "./command/ICommand.sol";
+import {
+    ICommand,
+    ICommandVoid,
+    ICommandSelect,
+    ICommandCheckbox,
+    SelectParameter,
+    CheckboxParameter,
+    ICommandAddress,
+    ICommandSwitch,
+    SwitchParameter,
+    ICommandSliderInt,
+    SliderIntParameter,
+    ICommandSliderFloat,
+    SliderFloatParameter,
+    ICommandRadio,
+    RadioParameter,
+    ICommandCheckbox,
+    CheckboxParameter,
+    ICommandTextfield,
+    TextfieldParameter,
+    ICommandTile,
+    PlayerEntity,
+    TargetEntity,
+    CommandRequirements,
+    CommandParameterType
+} from "./command/ICommand.sol";
 import {TileID} from "./world/IWorld.sol";
 
 contract GameRouter {
     DatastoreSetWrapper public immutable DATASTORE_SET_WRAPPER;
     CommandRegistry public immutable COMMAND_REGISTRY;
+
     error CommandNotFound(ICommand command);
     error NotPlayerOrOperator(address account);
     error NotOwner(address account);
     error CommandOnCooldown(uint64 availableAt);
     error InvalidCommandParameterType();
     error InvalidCommandCall();
-    constructor(
-        DatastoreSetWrapper datastoreSetWrapper,
-        CommandRegistry commandRegistry
-    ) {
+
+    constructor(DatastoreSetWrapper datastoreSetWrapper, CommandRegistry commandRegistry) {
         DATASTORE_SET_WRAPPER = datastoreSetWrapper;
         COMMAND_REGISTRY = commandRegistry;
     }
 
     modifier onlyPlayerOrOperator(PlayerEntity calldata playerEntity) {
-        address player = playerEntity.playerNft.ownerOf(
-            playerEntity.playerNftId
-        );
+        address player = playerEntity.playerNft.ownerOf(playerEntity.playerNftId);
         if (
-            msg.sender != player &&
-            !DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().contains(
-                address(this),
-                DatastoreSetIdAddress.wrap(keccak256(abi.encode(player))),
-                msg.sender
-            )
+            msg.sender != player
+                && !DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().contains(
+                    address(this), DatastoreSetIdAddress.wrap(keccak256(abi.encode(player))), msg.sender
+                )
         ) {
             revert NotPlayerOrOperator(msg.sender);
         }
@@ -211,9 +231,7 @@ contract GameRouter {
         // Check if the command is registered
         if (
             !DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().contains(
-                address(COMMAND_REGISTRY),
-                COMMAND_REGISTRY.getCommandSetKey(targetEntity.targetNft),
-                address(command)
+                address(COMMAND_REGISTRY), COMMAND_REGISTRY.getCommandSetKey(targetEntity.targetNft), address(command)
             )
         ) {
             revert CommandNotFound(command);
@@ -222,41 +240,23 @@ contract GameRouter {
 
         // Send payment if needed
         if (requirements.costCurrency != IERC20(address(0))) {
-            requirements.costCurrency.transferFrom(
-                msg.sender,
-                address(command),
-                requirements.costAmount
-            );
+            requirements.costCurrency.transferFrom(msg.sender, address(command), requirements.costAmount);
         }
         // If the command is on cooldown, revert
-        if (
-            command.getLastExecutedTimestamp() + requirements.cooldownSeconds >
-            block.timestamp
-        ) {
-            revert CommandOnCooldown(
-                command.getLastExecutedTimestamp() +
-                    requirements.cooldownSeconds
-            );
+        if (command.getLastExecutedTimestamp() + requirements.cooldownSeconds > block.timestamp) {
+            revert CommandOnCooldown(command.getLastExecutedTimestamp() + requirements.cooldownSeconds);
         }
     }
 
     function addOperator(address operator) external {
-        DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().add(
-            getOperatorSetKey(msg.sender),
-            operator
-        );
+        DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().add(getOperatorSetKey(msg.sender), operator);
     }
 
     function removeOperator(address operator) external {
-        DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().remove(
-            getOperatorSetKey(msg.sender),
-            operator
-        );
+        DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().remove(getOperatorSetKey(msg.sender), operator);
     }
 
-    function getOperatorSetKey(
-        address player
-    ) public pure returns (DatastoreSetIdAddress) {
+    function getOperatorSetKey(address player) public pure returns (DatastoreSetIdAddress) {
         return DatastoreSetIdAddress.wrap(keccak256(abi.encode(player)));
     }
 }

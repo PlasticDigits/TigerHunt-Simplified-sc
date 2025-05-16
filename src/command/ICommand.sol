@@ -6,34 +6,7 @@ pragma solidity ^0.8.30;
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {TileID} from "../world/IWorld.sol";
-
-struct PlayerEntity {
-    IERC721 playerNft;
-    uint256 playerNftId;
-}
-
-struct TargetEntity {
-    IERC721 targetNft;
-    uint256 targetNftId;
-}
-
-type EntityKey is bytes32;
-
-library EntityLib {
-    function key(IERC721 nft, uint256 id) internal pure returns (EntityKey) {
-        return EntityKey.wrap(keccak256(abi.encode(nft, id)));
-    }
-    function key(
-        PlayerEntity calldata playerEntity
-    ) internal pure returns (EntityKey) {
-        return key(playerEntity.playerNft, playerEntity.playerNftId);
-    }
-    function key(
-        TargetEntity calldata targetEntity
-    ) internal pure returns (EntityKey) {
-        return key(targetEntity.targetNft, targetEntity.targetNftId);
-    }
-}
+import {PlayerEntity, TargetEntity} from "../entity/EntityLib.sol";
 
 enum CommandParameterType {
     VOID,
@@ -49,15 +22,22 @@ enum CommandParameterType {
 }
 
 type SwitchParameter is bool;
+
 type SliderIntParameter is uint64;
+
 type SliderFloatParameter is uint256;
+
 type RadioParameter is uint8;
+
 type SelectParameter is uint8;
+
 type CheckboxOption is uint8;
+
 struct CheckboxParameter {
     CheckboxOption[] options;
     bool[] isChecked;
 }
+
 struct TextfieldParameter {
     string text;
 }
@@ -75,10 +55,7 @@ interface ICommand {
     function getDescription() external view returns (string memory);
     function getIconIpfsCid() external view returns (string memory);
 
-    function getRequirements()
-        external
-        view
-        returns (CommandRequirements memory);
+    function getRequirements() external view returns (CommandRequirements memory);
 
     function getParameterType() external view returns (CommandParameterType);
 
@@ -86,53 +63,42 @@ interface ICommand {
 }
 
 interface ICommandVoid is ICommand {
-    function execute(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external;
+    function execute(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity) external;
 
-    function isValid(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (bool);
+    function isValid(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (bool);
 }
 
 interface ICommandAddress is ICommand {
-    function execute(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        address parameter
-    ) external;
+    function execute(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, address parameter)
+        external;
 
-    function isValid(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        address parameter
-    ) external view returns (bool);
+    function isValid(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, address parameter)
+        external
+        view
+        returns (bool);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (address);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (address);
 }
 
 interface ICommandSwitch is ICommand {
-    function execute(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        SwitchParameter parameter
-    ) external;
+    function execute(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, SwitchParameter parameter)
+        external;
 
-    function isValid(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        SwitchParameter parameter
-    ) external view returns (bool);
+    function isValid(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, SwitchParameter parameter)
+        external
+        view
+        returns (bool);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (bool);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (bool);
 }
 
 interface ICommandSliderInt is ICommand {
@@ -148,20 +114,20 @@ interface ICommandSliderInt is ICommand {
         SliderIntParameter parameter
     ) external view returns (bool);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SliderIntParameter);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SliderIntParameter);
 
-    function getMin(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SliderIntParameter);
+    function getMin(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SliderIntParameter);
 
-    function getMax(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SliderIntParameter);
+    function getMax(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SliderIntParameter);
 }
 
 interface ICommandSliderFloat is ICommand {
@@ -177,54 +143,50 @@ interface ICommandSliderFloat is ICommand {
         SliderFloatParameter parameter
     ) external view returns (bool);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SliderFloatParameter);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SliderFloatParameter);
 
-    function getDecimals(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (uint8);
+    function getDecimals(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (uint8);
 
-    function getMin(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SliderFloatParameter);
+    function getMin(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SliderFloatParameter);
 
-    function getMax(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SliderFloatParameter);
+    function getMax(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SliderFloatParameter);
 }
 
 interface ICommandRadio is ICommand {
-    function execute(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        RadioParameter parameter
-    ) external;
+    function execute(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, RadioParameter parameter)
+        external;
 
-    function isValid(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        RadioParameter parameter
-    ) external view returns (bool);
+    function isValid(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, RadioParameter parameter)
+        external
+        view
+        returns (bool);
 
-    function getOptionNames(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (string[] memory);
+    function getOptionNames(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (string[] memory);
 
-    function getOptions(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (RadioParameter[] memory);
+    function getOptions(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (RadioParameter[] memory);
 
-    function getSelected(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (RadioParameter);
+    function getSelected(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (RadioParameter);
 }
 
 interface ICommandCheckbox is ICommand {
@@ -240,49 +202,45 @@ interface ICommandCheckbox is ICommand {
         CheckboxParameter calldata parameter
     ) external view returns (bool);
 
-    function getOptionNames(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (string[] memory);
+    function getOptionNames(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (string[] memory);
 
-    function getOptions(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (CheckboxOption[] memory);
+    function getOptions(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (CheckboxOption[] memory);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (CheckboxParameter[] memory);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (CheckboxParameter[] memory);
 }
 
 interface ICommandSelect is ICommand {
-    function execute(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        SelectParameter parameter
-    ) external;
+    function execute(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, SelectParameter parameter)
+        external;
 
-    function isValid(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        SelectParameter parameter
-    ) external view returns (bool);
+    function isValid(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, SelectParameter parameter)
+        external
+        view
+        returns (bool);
 
-    function getOptionNames(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (string[] memory);
+    function getOptionNames(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (string[] memory);
 
-    function getOptions(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SelectParameter[] memory);
+    function getOptions(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SelectParameter[] memory);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (SelectParameter);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (SelectParameter);
 }
 
 interface ICommandTextfield is ICommand {
@@ -298,42 +256,38 @@ interface ICommandTextfield is ICommand {
         TextfieldParameter calldata parameter
     ) external view returns (bool);
 
-    function getMaxLength(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (uint256);
+    function getMaxLength(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (uint256);
 
-    function getMinLength(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (uint256);
+    function getMinLength(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (uint256);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (string memory);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (string memory);
 }
 
 interface ICommandTile is ICommand {
-    function execute(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        TileID parameter
-    ) external;
+    function execute(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, TileID parameter)
+        external;
 
-    function isValid(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity,
-        TileID parameter
-    ) external view returns (bool);
+    function isValid(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity, TileID parameter)
+        external
+        view
+        returns (bool);
 
-    function getOptions(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (TileID[] memory);
+    function getOptions(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (TileID[] memory);
 
-    function getValue(
-        PlayerEntity calldata playerEntity,
-        TargetEntity calldata targetEntity
-    ) external view returns (TileID);
+    function getValue(PlayerEntity calldata playerEntity, TargetEntity calldata targetEntity)
+        external
+        view
+        returns (TileID);
 }

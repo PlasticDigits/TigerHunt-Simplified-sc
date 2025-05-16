@@ -20,10 +20,7 @@ interface IWorld {
 
     function getNeighbors(TileID tile) external view returns (TileID[] memory);
 
-    function isNeighboring(
-        TileID tileA,
-        TileID tileB
-    ) external view returns (bool);
+    function isNeighboring(TileID tileA, TileID tileB) external view returns (bool);
 
     function getTilePoint3D(TileID tile) external view returns (Point3D memory);
 }
