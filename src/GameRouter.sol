@@ -34,10 +34,12 @@ import {
     CommandParameterType
 } from "./command/ICommand.sol";
 import {TileID} from "./world/IWorld.sol";
+import {EffectsQueue} from "./effects/EffectsQueue.sol";
 
 contract GameRouter {
     DatastoreSetWrapper public immutable DATASTORE_SET_WRAPPER;
     CommandRegistry public immutable COMMAND_REGISTRY;
+    EffectsQueue public immutable EFFECTS_QUEUE;
 
     error CommandNotFound(ICommand command);
     error NotPlayerOrOperator(address account);
@@ -46,9 +48,10 @@ contract GameRouter {
     error InvalidCommandParameterType();
     error InvalidCommandCall();
 
-    constructor(DatastoreSetWrapper datastoreSetWrapper, CommandRegistry commandRegistry) {
+    constructor(DatastoreSetWrapper datastoreSetWrapper, CommandRegistry commandRegistry, EffectsQueue effectsQueue) {
         DATASTORE_SET_WRAPPER = datastoreSetWrapper;
         COMMAND_REGISTRY = commandRegistry;
+        EFFECTS_QUEUE = effectsQueue;
     }
 
     modifier onlyPlayerOrOperator(PlayerEntity calldata playerEntity) {
@@ -221,6 +224,14 @@ contract GameRouter {
             revert InvalidCommandCall();
         }
         command.execute(playerEntity, targetEntity, parameter);
+    }
+
+    function claimEffects(PlayerEntity calldata playerEntity, uint256 n) public onlyPlayerOrOperator(playerEntity) {
+        EFFECTS_QUEUE.claimEffects(playerEntity, n);
+    }
+
+    function claimEffectsAll(PlayerEntity calldata playerEntity) external {
+        claimEffects(playerEntity, EFFECTS_QUEUE.unclaimedEffectCount(playerEntity));
     }
 
     function _checkGenericCommandRequirements(
