@@ -5,6 +5,7 @@ pragma solidity ^0.8.30;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {TileID} from "../world/IWorld.sol";
 
 struct PlayerEntity {
     IERC721 playerNft;
@@ -16,13 +17,23 @@ struct TargetEntity {
     uint256 targetNftId;
 }
 
-struct TilePackedXYZ {
-    uint16 x;
-    uint16 y;
-    uint16 z;
-}
+type EntityKey is bytes32;
 
-type CommandKey is bytes32;
+library EntityLib {
+    function key(IERC721 nft, uint256 id) internal pure returns (EntityKey) {
+        return EntityKey.wrap(keccak256(abi.encode(nft, id)));
+    }
+    function key(
+        PlayerEntity calldata playerEntity
+    ) internal pure returns (EntityKey) {
+        return key(playerEntity.playerNft, playerEntity.playerNftId);
+    }
+    function key(
+        TargetEntity calldata targetEntity
+    ) internal pure returns (EntityKey) {
+        return key(targetEntity.targetNft, targetEntity.targetNftId);
+    }
+}
 
 enum CommandParameterType {
     VOID,
@@ -307,22 +318,22 @@ interface ICommandTile is ICommand {
     function execute(
         PlayerEntity calldata playerEntity,
         TargetEntity calldata targetEntity,
-        TilePackedXYZ calldata parameter
+        TileID parameter
     ) external;
 
     function isValid(
         PlayerEntity calldata playerEntity,
         TargetEntity calldata targetEntity,
-        TilePackedXYZ calldata parameter
+        TileID parameter
     ) external view returns (bool);
 
     function getOptions(
         PlayerEntity calldata playerEntity,
         TargetEntity calldata targetEntity
-    ) external view returns (TilePackedXYZ[] memory);
+    ) external view returns (TileID[] memory);
 
     function getValue(
         PlayerEntity calldata playerEntity,
         TargetEntity calldata targetEntity
-    ) external view returns (TilePackedXYZ memory);
+    ) external view returns (TileID);
 }

@@ -1,9 +1,5 @@
-[profile.default]
-src = "src"
-out = "out"
-libs = ["lib"]
-solc = "0.8.30"
-remappings = [
+{
+  "solidity.remappings": [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
     "ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
     "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
@@ -13,6 +9,6 @@ remappings = [
     "playpen/=lib/playpen/src/",
     "@prb-math/=lib/prb-math/src/",
     "@prb/math/=lib/prb-math/"
-  ]
-
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+  ],
+  "solidity.formatter": "forge"
+}

@@ -3,13 +3,12 @@
 // Entrypoint for playing the game, executes commands
 pragma solidity ^0.8.30;
 
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {DatastoreSetWrapper} from "./datastore/DatastoreSetWrapper.sol";
 import {DatastoreSetIdAddress} from "./datastore/DatastoreSetAddress.sol";
-import {DatastoreSetIdBytes32} from "./datastore/DatastoreSetBytes32.sol";
-import {CommandRegistry} from "./CommandRegistry.sol";
-import {ICommand, ICommandVoid, ICommandSelect, ICommandCheckbox, SelectParameter, CheckboxParameter, ICommandAddress, ICommandSwitch, SwitchParameter, ICommandSliderInt, SliderIntParameter, ICommandSliderFloat, SliderFloatParameter, ICommandRadio, RadioParameter, ICommandCheckbox, CheckboxParameter, ICommandTextfield, TextfieldParameter, ICommandTile, TilePackedXYZ, PlayerEntity, TargetEntity, CommandKey, CommandRequirements, CommandParameterType} from "./ICommand.sol";
+import {CommandRegistry} from "./command/CommandRegistry.sol";
+import {ICommand, ICommandVoid, ICommandSelect, ICommandCheckbox, SelectParameter, CheckboxParameter, ICommandAddress, ICommandSwitch, SwitchParameter, ICommandSliderInt, SliderIntParameter, ICommandSliderFloat, SliderFloatParameter, ICommandRadio, RadioParameter, ICommandCheckbox, CheckboxParameter, ICommandTextfield, TextfieldParameter, ICommandTile, PlayerEntity, TargetEntity, CommandRequirements, CommandParameterType} from "./command/ICommand.sol";
+import {TileID} from "./world/IWorld.sol";
 
 contract GameRouter {
     DatastoreSetWrapper public immutable DATASTORE_SET_WRAPPER;
@@ -192,7 +191,7 @@ contract GameRouter {
         PlayerEntity calldata playerEntity,
         TargetEntity calldata targetEntity,
         ICommandTile command,
-        TilePackedXYZ calldata parameter
+        TileID parameter
     ) external {
         _checkGenericCommandRequirements(playerEntity, targetEntity, command);
         if (command.getParameterType() != CommandParameterType.TILE) {
@@ -213,7 +212,7 @@ contract GameRouter {
         if (
             !DATASTORE_SET_WRAPPER.DATASTORE_SET_ADDRESS().contains(
                 address(COMMAND_REGISTRY),
-                COMMAND_REGISTRY.getCommandSetKey(targetEntity),
+                COMMAND_REGISTRY.getCommandSetKey(targetEntity.targetNft),
                 address(command)
             )
         ) {

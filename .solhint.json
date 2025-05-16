@@ -2,7 +2,7 @@
   "extends": "solhint:recommended",
   "rules": {
     "code-complexity": ["error", 8],
-    "compiler-version": ["error", "^0.8.30"],
+    "compiler-version": ["error", "^0.8.0"],
     "func-name-mixedcase": "off",
     "func-visibility": [
       "error",
@@ -10,7 +10,6 @@
         "ignoreConstructors": true
       }
     ],
-    "max-line-length": ["warn", 120],
     "named-parameters-mapping": "warn",
     "no-console": "off",
     "not-rely-on-time": "off"

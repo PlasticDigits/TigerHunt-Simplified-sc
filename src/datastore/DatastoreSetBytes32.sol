@@ -63,28 +63,32 @@ contract DatastoreSetBytes32 {
     }
 
     function contains(
+        address datastoreSetOwner,
         DatastoreSetIdBytes32 setId,
         bytes32 item
     ) external view returns (bool) {
-        return _bytes32Sets[msg.sender][setId].contains(item);
+        return _bytes32Sets[datastoreSetOwner][setId].contains(item);
     }
 
     function length(
+        address datastoreSetOwner,
         DatastoreSetIdBytes32 setId
     ) external view returns (uint256) {
-        return _bytes32Sets[msg.sender][setId].length();
+        return _bytes32Sets[datastoreSetOwner][setId].length();
     }
 
     function at(
+        address datastoreSetOwner,
         DatastoreSetIdBytes32 setId,
         uint256 index
     ) external view returns (bytes32 item) {
-        return _bytes32Sets[msg.sender][setId].at(index);
+        return _bytes32Sets[datastoreSetOwner][setId].at(index);
     }
 
     function getAll(
+        address datastoreSetOwner,
         DatastoreSetIdBytes32 setId
     ) external view returns (bytes32[] memory items) {
-        return _bytes32Sets[msg.sender][setId].values();
+        return _bytes32Sets[datastoreSetOwner][setId].values();
     }
 }
