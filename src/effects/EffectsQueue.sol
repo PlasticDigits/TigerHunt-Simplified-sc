@@ -3,11 +3,11 @@
 pragma solidity 0.8.30;
 
 import {EffectIndex, EffectTimestamp, IEffect} from "./IEffect.sol";
-import {TargetEntity, EntityKey, EntityLib} from "../entity/EntityLib.sol";
+import {PlayerEntity, EntityKey, EntityLib} from "../entity/EntityLib.sol";
 import {AccessManaged} from "@openzeppelin/contracts/access/manager/AccessManaged.sol";
 
 contract EffectsQueue is AccessManaged {
-    using EntityLib for TargetEntity;
+    using EntityLib for PlayerEntity;
 
     //When a new effect is added, the totalEffectIndex is incremented
     mapping(EntityKey targetEntityKey => uint256 totalEffectCount) public totalEffectCount;
@@ -21,18 +21,18 @@ contract EffectsQueue is AccessManaged {
 
     constructor(address accessAuthority) AccessManaged(accessAuthority) {}
 
-    function unclaimedEffectCount(TargetEntity calldata targetEntity) public view returns (uint256) {
+    function unclaimedEffectCount(PlayerEntity calldata targetEntity) public view returns (uint256) {
         EntityKey targetEntityKey = targetEntity.key();
         return totalEffectCount[targetEntityKey] - claimedEffectCount[targetEntityKey];
     }
 
-    function addEffect(TargetEntity calldata targetEntity, IEffect effect) external restricted {
+    function addEffect(PlayerEntity calldata targetEntity, IEffect effect) external restricted {
         EntityKey targetEntityKey = targetEntity.key();
         effectImplementor[targetEntityKey][EffectIndex.wrap(totalEffectCount[targetEntityKey])] = effect;
         totalEffectCount[targetEntityKey]++;
     }
 
-    function claimEffects(TargetEntity calldata targetEntity, uint256 n) external restricted {
+    function claimEffects(PlayerEntity calldata targetEntity, uint256 n) external restricted {
         EntityKey targetEntityKey = targetEntity.key();
         require(n <= unclaimedEffectCount(targetEntity), NotEnoughUnclaimedEffects());
         for (uint256 i; i < n; i++) {

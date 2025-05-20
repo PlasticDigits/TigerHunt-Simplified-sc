@@ -82,4 +82,35 @@ contract DatastoreSetAddress {
     {
         return _addressSets[datastoreSetOwner][setId].values();
     }
+
+    function getFrom(address datastoreSetOwner, DatastoreSetIdAddress setId, uint256 index, uint256 count)
+        public
+        view
+        returns (address[] memory items)
+    {
+        uint256 totalLength = _addressSets[datastoreSetOwner][setId].length();
+        if (index >= totalLength) {
+            return new address[](0);
+        }
+        if (index + count > totalLength) {
+            count = totalLength - index;
+        }
+        items = new address[](count);
+        for (uint256 i; i < count; i++) {
+            items[i] = _addressSets[datastoreSetOwner][setId].at(index + i);
+        }
+        return items;
+    }
+
+    function getLast(address datastoreSetOwner, DatastoreSetIdAddress setId, uint256 count)
+        external
+        view
+        returns (address[] memory items)
+    {
+        uint256 totalLength = _addressSets[datastoreSetOwner][setId].length();
+        if (totalLength < count) {
+            count = totalLength;
+        }
+        return getFrom(datastoreSetOwner, setId, totalLength - count, count);
+    }
 }

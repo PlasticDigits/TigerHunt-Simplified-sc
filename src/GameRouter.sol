@@ -28,13 +28,12 @@ import {
     ICommandTextfield,
     TextfieldParameter,
     ICommandTile,
-    PlayerEntity,
-    TargetEntity,
     CommandRequirements,
     CommandParameterType
 } from "./command/ICommand.sol";
 import {TileID} from "./world/IWorld.sol";
 import {EffectsQueue} from "./effects/EffectsQueue.sol";
+import {PlayerEntity, TargetEntity} from "./entity/EntityLib.sol";
 
 contract GameRouter {
     DatastoreSetWrapper public immutable DATASTORE_SET_WRAPPER;
