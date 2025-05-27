@@ -35,12 +35,12 @@ library Point3DLib {
     }
 
     function hash(Point3D memory point, bytes32 seed) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked(seed, point.x, point.y, point.z));
+        return keccak256(abi.encode(seed, point.x, point.y, point.z));
     }
 
     /**
-     * @notice Gets the minimum corner (+x, +y, +z) of the cube containing the point
-     * @dev Each
+     * @notice Gets the minimum corner (most negative x, y, z) of the cube containing the point
+     * @dev Floors each coordinate based on the cell width to find the grid-aligned minimum corner
      * @param point The point to find the containing cube for
      * @param cellWidth The grid cell size
      * @return The minimum corner of the containing cube
@@ -84,8 +84,10 @@ library Point3DLib {
 
     // Normalize a hash value to a floating point between -1 and 1
     function normalizeHash(bytes32 h) internal pure returns (SD59x18) {
-        // Convert to a number between -1e18 and 1e18
-        int256 value = (int256(uint256(h) % 2e18) - 1e18);
+        // Use the upper 128 bits for better distribution
+        uint256 hashValue = uint256(h) >> 128;
+        // Scale to range [0, 2e18) then shift to [-1e18, 1e18)
+        int256 value = int256((hashValue * 2e18) >> 128) - 1e18;
         return SD59x18.wrap(value);
     }
 
