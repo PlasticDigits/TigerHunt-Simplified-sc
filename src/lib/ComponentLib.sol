@@ -57,7 +57,7 @@ library ComponentLib {
         ComponentFieldId id; // Unique field identifier
         ComponentDataType dataType; // Type of data stored
         string name; // Human-readable field name
-        string description; // Description of what this field represents
+        string description; // Human-readable description of what this field represents
     }
 
     function getComponentFieldSetKey(ComponentId componentId) internal pure returns (DatastoreSetIdUint16) {

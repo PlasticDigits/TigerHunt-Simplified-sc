@@ -9,6 +9,7 @@ import {DatastoreSetUint48} from "./DatastoreSetUint48.sol";
 import {DatastoreSetBytes32} from "./DatastoreSetBytes32.sol";
 import {DatastoreSetAddress} from "./DatastoreSetAddress.sol";
 import {DatastoreSetComponent} from "./DatastoreSetComponent.sol";
+import {DatastoreSetComponentField} from "./DatastoreSetComponentField.sol";
 import {DatastoreSetEntity} from "./DatastoreSetEntity.sol";
 
 /**
@@ -26,6 +27,7 @@ contract DatastoreSetWrapper {
     DatastoreSetUint48 public immutable DATASTORE_SET_UINT48;
 
     DatastoreSetComponent public immutable DATASTORE_SET_COMPONENT;
+    DatastoreSetComponentField public immutable DATASTORE_SET_COMPONENT_FIELD;
     DatastoreSetEntity public immutable DATASTORE_SET_ENTITY;
 
     constructor() {
@@ -38,6 +40,7 @@ contract DatastoreSetWrapper {
         DATASTORE_SET_UINT48 = new DatastoreSetUint48();
 
         DATASTORE_SET_COMPONENT = new DatastoreSetComponent();
+        DATASTORE_SET_COMPONENT_FIELD = new DatastoreSetComponentField();
         DATASTORE_SET_ENTITY = new DatastoreSetEntity();
     }
 }
