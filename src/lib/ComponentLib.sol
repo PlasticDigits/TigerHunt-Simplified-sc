@@ -41,8 +41,8 @@ library ComponentLib {
         DATASTORE_SET_ID_UINT256, // Datastore Set of uint256 values
         DATASTORE_SET_ID_BYTES32, // Datastore Set of bytes32 values
         DATASTORE_SET_ID_ADDRESS, // Datastore Set of addresses
-        DATASTORE_SET_ID_ENTITY_ID, // Datastore Set of entity IDs
-        DATASTORE_SET_ID_COMPONENT_ID, // Datastore Set of component IDs
+        DATASTORE_SET_ID_ENTITY, // Datastore Set of entity IDs
+        DATASTORE_SET_ID_COMPONENT, // Datastore Set of component IDs
         DATASTORE_LOGBOOK_ID // Datastore of a logbook
 
     }
