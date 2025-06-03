@@ -31,7 +31,7 @@ library ComponentLib {
         // custom types
         POINT_3D, // 3D point
         DAY_IN_GAME, // Day in game (uint16)
-        // reference types
+        // reference types: ECS
         ENTITY_ID, // Reference to another entity
         COMPONENT_ID, // Reference to a component
         // reference types: datastores
@@ -43,7 +43,10 @@ library ComponentLib {
         DATASTORE_SET_ID_ADDRESS, // Datastore Set of addresses
         DATASTORE_SET_ID_ENTITY, // Datastore Set of entity IDs
         DATASTORE_SET_ID_COMPONENT, // Datastore Set of component IDs
-        DATASTORE_LOGBOOK_ID // Datastore of a logbook
+        DATASTORE_LOGBOOK_ID, // Datastore of a logbook
+        // reference types: digital asset storage
+        INVENTORY_ID_TOKEN_ERC20, // Reference to an ERC20 token inventory
+        INVENTORY_ID_TOKEN_ERC721 // Reference to an ERC721 token inventory
 
     }
 
